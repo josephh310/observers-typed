@@ -39,7 +39,7 @@ local function observeCharacter(callback: Callback, allowedPlayers: { Player }?)
 
 		local characterAddedConn: RBXScriptConnection
 
-		local function OnCharacterAdded(character: Model)
+		local function onCharacterAdded(character: Model)
 			local currentCharCleanup: (() -> ())? = nil
 
 			-- Call the callback:
@@ -74,12 +74,12 @@ local function observeCharacter(callback: Callback, allowedPlayers: { Player }?)
 		end
 
 		-- Handle character added:
-		characterAddedConn = player.CharacterAdded:Connect(OnCharacterAdded)
+		characterAddedConn = player.CharacterAdded:Connect(onCharacterAdded)
 
 		-- Handle initial character:
 		task.defer(function()
-			if player.Character and characterAddedConn.Connected then
-				task.spawn(OnCharacterAdded, player.Character)
+			if player.Character ~= nil and characterAddedConn.Connected then
+				task.spawn(onCharacterAdded, player.Character :: Model)
 			end
 		end)
 

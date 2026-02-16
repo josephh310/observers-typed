@@ -24,7 +24,7 @@ local function observeProperty(instance: Instance, property: string, callback: C
 	local propChangedConn: RBXScriptConnection
 	local changedId = 0
 
-	local function OnPropertyChanged()
+	local function onPropertyChanged()
 		if cleanFn ~= nil then
 			task.spawn(cleanFn)
 			cleanFn = nil
@@ -48,14 +48,14 @@ local function observeProperty(instance: Instance, property: string, callback: C
 	end
 
 	-- Get changed values:
-	propChangedConn = instance:GetPropertyChangedSignal(property):Connect(OnPropertyChanged)
+	propChangedConn = instance:GetPropertyChangedSignal(property):Connect(onPropertyChanged)
 
 	-- Get initial value:
 	task.defer(function()
 		if not propChangedConn.Connected then
 			return
 		end
-		OnPropertyChanged()
+		onPropertyChanged()
 	end)
 
 	-- Cleanup:

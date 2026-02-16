@@ -60,7 +60,7 @@ local function observeLocalCharacter(callback: Callback): () -> ()
 
 	local characterAddedConn = Players.LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
 	if Players.LocalPlayer.Character ~= nil then
-		task.spawn(onCharacterAdded, Players.LocalPlayer.Character)
+		task.spawn(onCharacterAdded, Players.LocalPlayer.Character :: Model)
 	end
 
 	return function()

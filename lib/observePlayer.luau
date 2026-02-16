@@ -27,7 +27,7 @@ local function observePlayer(callback: Callback): () -> ()
 	local cleanupsPerPlayer: { [Player]: (exitReason: Enum.PlayerExitReason) -> () } = {}
 	local inflight: { [Player]: Enum.PlayerExitReason } = {}
 
-	local function OnPlayerAdded(player: Player)
+	local function onPlayerAdded(player: Player)
 		if not playerAddedConn.Connected then
 			return
 		end
@@ -46,7 +46,7 @@ local function observePlayer(callback: Callback): () -> ()
 		end)
 	end
 
-	local function OnPlayerRemoving(player: Player, exitReason: Enum.PlayerExitReason)
+	local function onPlayerRemoving(player: Player, exitReason: Enum.PlayerExitReason)
 		if inflight[player] then
 			inflight[player] = exitReason
 		end
@@ -59,8 +59,8 @@ local function observePlayer(callback: Callback): () -> ()
 	end
 
 	-- Listen for changes:
-	playerAddedConn = Players.PlayerAdded:Connect(OnPlayerAdded)
-	playerRemovingConn = Players.PlayerRemoving:Connect(OnPlayerRemoving)
+	playerAddedConn = Players.PlayerAdded:Connect(onPlayerAdded)
+	playerRemovingConn = Players.PlayerRemoving:Connect(onPlayerRemoving)
 
 	-- Initial:
 	task.defer(function()
@@ -69,7 +69,7 @@ local function observePlayer(callback: Callback): () -> ()
 		end
 
 		for _, player in Players:GetPlayers() do
-			task.spawn(OnPlayerAdded, player)
+			task.spawn(onPlayerAdded, player)
 		end
 	end)
 
@@ -80,7 +80,7 @@ local function observePlayer(callback: Callback): () -> ()
 
 		local player = next(cleanupsPerPlayer)
 		while player do
-			OnPlayerRemoving(player, inflight[player])
+			onPlayerRemoving(player, inflight[player])
 			player = next(cleanupsPerPlayer)
 		end
 	end

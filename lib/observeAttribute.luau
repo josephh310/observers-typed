@@ -73,7 +73,7 @@ local function observeAttribute(
 
 	local valueGuard: (value: AttributeValue) -> boolean = if guard ~= nil then guard else defaultGuard
 
-	local function OnAttributeChanged()
+	local function onAttributeChanged()
 		if cleanFn ~= nil then
 			task.spawn(cleanFn)
 			cleanFn = nil
@@ -99,7 +99,7 @@ local function observeAttribute(
 	end
 
 	-- Get changed values:
-	onAttrChangedConn = instance:GetAttributeChangedSignal(name):Connect(OnAttributeChanged)
+	onAttrChangedConn = instance:GetAttributeChangedSignal(name):Connect(onAttributeChanged)
 
 	-- Get initial value:
 	task.defer(function()
@@ -107,7 +107,7 @@ local function observeAttribute(
 			return
 		end
 
-		OnAttributeChanged()
+		onAttributeChanged()
 	end)
 
 	-- Cleanup:
