@@ -1,6 +1,6 @@
 --!strict
 
-type Callback<T> = (value: T) -> (() -> ())?
+type Callback<T> = (value: T) -> ...any
 
 --[=[
 	@within Observers
