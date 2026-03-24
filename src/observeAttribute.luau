@@ -1,25 +1,5 @@
 --!strict
-
-export type AttributeValue =
-	| string
-	| boolean
-	| number
-	| UDim
-	| UDim2
-	| BrickColor
-	| Color3
-	| Vector2
-	| Vector3
-	| CFrame
-	| NumberSequence
-	| ColorSequence
-	| NumberRange
-	| Rect
-	| Font
-
-type Callback = (value: AttributeValue) -> (() -> ())?
-
-local function defaultGuard(_value: AttributeValue)
+local function defaultGuard(_value: any)
 	return true
 end
 
@@ -60,18 +40,18 @@ end
 	stopObserving()
 	```
 ]=]
-local function observeAttribute(
+local function observeAttribute<T>(
 	instance: Instance,
 	name: string,
-	callback: Callback,
-	guard: ((value: AttributeValue) -> boolean)?
+	callback: (value: T) -> ...any,
+	guard: ((value: T) -> boolean)?
 ): () -> ()
 	local cleanFn: (() -> ())? = nil
 
 	local onAttrChangedConn: RBXScriptConnection
 	local changedId = 0
 
-	local valueGuard: (value: AttributeValue) -> boolean = if guard ~= nil then guard else defaultGuard
+	local valueGuard: (value: any) -> boolean = if guard ~= nil then guard :: any else defaultGuard
 
 	local function onAttributeChanged()
 		if cleanFn ~= nil then
@@ -82,7 +62,7 @@ local function observeAttribute(
 		changedId += 1
 		local id = changedId
 
-		local value = instance:GetAttribute(name) :: AttributeValue?
+		local value = instance:GetAttribute(name) :: any?
 
 		if value ~= nil and valueGuard(value) then
 			task.spawn(function()
