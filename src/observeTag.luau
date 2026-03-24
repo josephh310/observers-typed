@@ -4,7 +4,7 @@ local CollectionService = game:GetService("CollectionService")
 
 type InstanceStatus = "__inflight__" | "__dead__"
 
-type Callback<T> = (instance: T) -> (() -> ())?
+type Callback = (instance: Instance) -> ...any
 
 --[=[
 	@within Observers
@@ -55,7 +55,7 @@ type Callback<T> = (instance: T) -> (() -> ())?
 	)
 	```
 ]=]
-function observeTag<T>(tag: string, callback: Callback<T>, ancestors: { Instance }?): () -> ()
+function observeTag(tag: string, callback: Callback, ancestors: { Instance }?): () -> ()
 	local instances: { [Instance]: InstanceStatus | () -> () } = {}
 	local ancestryConn: { [Instance]: RBXScriptConnection } = {}
 
