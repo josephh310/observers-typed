@@ -7,10 +7,10 @@
 ]=]
 
 return {
-	observeTag = require(script.observeTag),
-	observeAttribute = require(script.observeAttribute),
-	observeProperty = require(script.observeProperty),
-	observePlayer = require(script.observePlayer),
-	observeCharacter = require(script.observeCharacter),
-	observeLocalCharacter = require(script.observeLocalCharacter),
+	ObserveTag = require(script.observeTag),
+	ObserveAttribute = require(script.observeAttribute),
+	ObserveProperty = require(script.observeProperty),
+	ObservePlayer = require(script.observePlayer),
+	ObserveCharacter = require(script.observeCharacter),
+	ObserveLocalCharacter = require(script.observeLocalCharacter),
 }
