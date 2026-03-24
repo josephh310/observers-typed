@@ -18,7 +18,7 @@ type Callback<T> = (value: T) -> ...any
 	end)
 	```
 ]=]
-local function observeProperty(instance: Instance, property: string, callback: Callback<unknown>): () -> ()
+local function observeProperty<I, P>(instance: I & Instance, property: P & keyof<I>, callback: Callback<index<I, P>>): () -> ()
 	local cleanFn: (() -> ())? = nil
 
 	local propChangedConn: RBXScriptConnection
