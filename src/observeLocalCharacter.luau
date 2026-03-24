@@ -5,7 +5,7 @@ local RunService = game:GetService("RunService")
 
 local IS_CLIENT = RunService:IsClient()
 
-type Callback = (character: Model) -> (() -> ())?
+type Callback = (character: Model) -> ...any
 
 --[=[
 	@within Observers

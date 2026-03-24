@@ -2,7 +2,7 @@
 
 local observePlayer = require(script.Parent.observePlayer)
 
-type Callback = (player: Player, character: Model) -> (() -> ())?
+type Callback = (player: Player, character: Model) -> ...any
 
 --[=[
 	@within Observers
@@ -30,7 +30,7 @@ type Callback = (player: Player, character: Model) -> (() -> ())?
 	```
 ]=]
 local function observeCharacter(callback: Callback, allowedPlayers: { Player }?): () -> ()
-	return observePlayer(function(player)
+	return observePlayer(function(player): (() -> ())?
 		if allowedPlayers ~= nil and not table.find(allowedPlayers, player) then
 			return nil
 		end

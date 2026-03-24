@@ -1,6 +1,6 @@
 --!strict
 
-type Callback = (player: Player) -> (() -> ())?
+type Callback = (player: Player) -> ...any
 
 local Players = game:GetService("Players")
 
