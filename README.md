@@ -34,10 +34,10 @@ Every observer function returns a **stop function** that, when called, disconnec
 ### `observeTag`
 
 ```luau
-observeTag(tag: string, callback: (instance: T) -> (() -> ())?, ancestors: { Instance }?): () -> ()
+observeTag<T>(tag: string, callback: (instance: T) -> (() -> ())?, valid_ancestry: (Instance | { Instance })?): () -> ()
 ```
 
-Observes instances tagged with a [CollectionService](https://create.roblox.com/docs/reference/engine/classes/CollectionService) tag. The callback fires for each matching instance and may return a cleanup function that is called when the instance loses the tag, is destroyed, or (if `ancestors` is provided) leaves the allowed ancestor hierarchy.
+Observes instances tagged with a [CollectionService](https://create.roblox.com/docs/reference/engine/classes/CollectionService) tag. The callback fires for each matching instance and may return a cleanup function that is called when the instance loses the tag, is destroyed, or (if `valid_ancestry` is provided) leaves the allowed ancestor hierarchy.
 
 ```luau
 local stopObserving = Observers.observeTag("MyTag", function(instance: Instance)
@@ -55,13 +55,18 @@ stopObserving()
 
 #### Ancestor inclusion list
 
-By default, tagged instances are observed anywhere in the game hierarchy. Pass an `ancestors` table to restrict observation to instances that are descendants of those ancestors.
+By default, tagged instances are observed anywhere in the game hierarchy. Pass a `valid_ancestry` argument to restrict observation to instances that are descendants of the given ancestor(s). This can be a single `Instance` or a table of `Instance`s.
 
 ```luau
 -- Only observe "MyTag" instances that are inside the Workspace:
 Observers.observeTag("MyTag", function(instance: Instance)
     -- ...
-end, { workspace })
+end, workspace)
+
+-- Or pass multiple ancestors as a table:
+Observers.observeTag("MyTag", function(instance: Instance)
+    -- ...
+end, { workspace, game:GetService("ReplicatedStorage") })
 ```
 
 ---
@@ -69,10 +74,10 @@ end, { workspace })
 ### `observeAttribute`
 
 ```luau
-observeAttribute(instance: Instance, name: string, callback: (value: AttributeValue) -> (() -> ())?, guard: ((value: AttributeValue) -> boolean)?): () -> ()
+observeAttribute<T>(instance: Instance, name: string, callback: (value: T) -> (() -> ())?, guard: ((value: T) -> boolean)?): () -> ()
 ```
 
-Observes an attribute on an instance. The callback fires whenever the attribute has a non-nil value, and the optional cleanup function is called when the value changes away from the previous one.
+Observes an attribute on an instance. The callback fires whenever the attribute has a non-nil value, and the optional cleanup function is called when the value changes away from the previous one. The generic type `T` allows you to specify the expected attribute type.
 
 ```luau
 Observers.observeAttribute(workspace.Model, "MyAttribute", function(value)
@@ -100,17 +105,15 @@ Observers.observeAttribute(
 )
 ```
 
-**Supported attribute types:** `string`, `boolean`, `number`, `UDim`, `UDim2`, `BrickColor`, `Color3`, `Vector2`, `Vector3`, `CFrame`, `NumberSequence`, `ColorSequence`, `NumberRange`, `Rect`, `Font`
-
 ---
 
 ### `observeProperty`
 
 ```luau
-observeProperty(instance: Instance, property: string, callback: (value: T) -> (() -> ())?): () -> ()
+observeProperty<I, P>(instance: I & Instance, property: P & keyof<I>, callback: (value: index<I, P>) -> (() -> ())?): () -> ()
 ```
 
-Observes a property of an instance. The callback fires immediately with the current value and again whenever the property changes. The optional cleanup function is called before each new callback invocation.
+Observes a property of an instance. The callback fires immediately with the current value and again whenever the property changes. The optional cleanup function is called before each new callback invocation. The generic types `I` and `P` ensure that the property name is valid for the given instance type, and the callback receives the correctly typed value.
 
 ```luau
 Observers.observeProperty(workspace.Model, "Name", function(newName: string)
