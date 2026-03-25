@@ -55,7 +55,7 @@ type Callback<T> = (instance: T) -> ...any
 	)
 	```
 ]=]
-function observeTag<T>(tag: string, callback: Callback<T>, ancestors: {any}): () -> ()
+function observeTag<T>(tag: string, callback: Callback<T>, valid_ancestry: any | {any}): () -> ()
     -- meow
 	local instances: { [Instance]: InstanceStatus | () -> () } = {}
 	local ancestryConn: { [Instance]: RBXScriptConnection } = {}
@@ -64,12 +64,18 @@ function observeTag<T>(tag: string, callback: Callback<T>, ancestors: {any}): ()
 	local onInstRemovedConn: RBXScriptConnection
 
 	local function isGoodAncestor(instance: Instance)
-		if ancestors == nil then
+		if valid_ancestry == nil then
 			return true
 		end
 
-		for _, ancestor in ancestors do
-			if instance:IsDescendantOf(ancestor) then
+		if typeof(valid_ancestry) == "table" then
+			for _, ancestor in valid_ancestry do
+				if instance:IsDescendantOf(ancestor) then
+					return true
+				end
+			end
+		else
+			if instance:IsDescendantOf(valid_ancestry) then
 				return true
 			end
 		end
