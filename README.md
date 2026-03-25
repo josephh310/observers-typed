@@ -2,7 +2,7 @@
 
 > Utility observer functions, with updated types — for Roblox.
 
-A strongly-typed collection of observer utility functions for Roblox, written in Luau with `--!strict`. Each observer fires a callback when something becomes "active" (a player joins, a tag is applied, an attribute changes, etc.) and calls an optional cleanup function when that thing becomes "inactive".
+A strongly-typed collection of observer utility functions for Roblox, based on Sleitnick's observer library.
 
 ## Installation
 
